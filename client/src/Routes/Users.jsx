@@ -1,21 +1,18 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
-/* eslint-disable no-unused-vars */
+
 import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  redirect,
 } from 'react-router-dom';
-import { useCookies, useEffect } from 'react-cookie';
-import Login from '../Pages/users/Login/Login/Login';
-import Signup from '../Pages/users/Signup/Signup/Signup';
-import Profile from '../Pages/users/Profile/Profile';
-import Home from '../Pages/users/Homepage/Home';
+import { useCookies} from 'react-cookie';
+import Login from '../Pages/Users/Login/Login';
+import Signup from '../Pages/Users/Signup/Signup/Signup';
+import Profile from '../Pages/Users/Profile/Profile';
+import Home from '../Pages/Users/Homepage/Home';
 import CheckToken from '../Context/CheckToken';
+import PersistLogin from '../Context/PersistLogin';
+import Layout from '../Layout';
 
 function Users() {
   const [cookies] = useCookies();
@@ -23,28 +20,21 @@ function Users() {
     <div>
       <Router>
         <Routes>
-          {/* <Route exact path='/home' element={<Sidebar props={<HomePage/>}/>} ></Route> */}
-          {/* <Route  extact path="/home" element={[<Topbar/>,<Sidebar props={<HomePage/>}/>]} /> */}
-
-          {/* <Route
-            path="/"
-            element={() => {
-              cookies.jwt ? <Login /> : '';
-            }}
-          /> */}
-          <Route path="/" element={<Login />} />
-          <Route path="/home" element={<CheckToken />}>
-            <Route path="/home" element={<Home />} />
-          </Route>
-
           <Route path="/signup" element={<Signup />} />
 
-          <Route path="/profile" element={<CheckToken />}>
+          <Route path="/" element={<Login />} />
+          
+          <Route element={<PersistLogin />}>
+            <Route element={<CheckToken />}>
+              <Route element={<Layout/>}>
 
-            <Route path="/profile" element={<Profile />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              </Route>
+            </Route>
           </Route>
-          {/* <Route path="/home" element={<CheckToken />} /> */}
-          {/* <Route path='/profile' element={[<Header/>,<Sidebar props={<Profile/>}/>]} /> */}
+
+
 
         </Routes>
       </Router>

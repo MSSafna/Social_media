@@ -25,7 +25,7 @@ function signup() {
   useEffect(() => {
     if (Object.keys(formErrors).length === 0 && submit) {
       axios.post(
-        '/api/auth/register',
+        '/api/user/register',
         { ...values },
 
         { withCredentials: true },
@@ -128,7 +128,6 @@ function signup() {
               </div>
               <div className="relative">
                 <select
-                  id="cars"
                   name="field"
                   className="p-2 rounded-xl border w-full"
                   style={{ color: 'grey' }}

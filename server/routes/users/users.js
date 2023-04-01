@@ -1,6 +1,31 @@
 const router = require('express').Router()
-const User = require('../../models/userside/User')
 const bcrypt = require('bcrypt')
+const JwtVerify=require('../../middleware/JWTVerify')
+const userController = require('../../controllers/userController')
+const authController=require('../../controllers/authController')
+const JWTVerify=require('../../middleware/JWTVerify')
+
+
+
+//................................signup.................................
+router.post('/register',authController.userRegigster)
+
+//.....................................login.............................
+router.post('/login',authController.userLogin) // loginUser
+
+//...................................searchUser........................
+router.get('/searchuser',userController.getSearchUser)
+
+//....................................getUserPost....................
+router.get('/:id',JWTVerify.JWTVerify,userController.userPosts)
+
+
+
+
+ 
+
+
+
 
 // ............................................Update userAccount......................................
 router.put('/:id', async (req, res) => {

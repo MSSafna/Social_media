@@ -8,9 +8,8 @@ module.exports = {
         grey:"#A99696",
         socialBlue:"#348feb",
         profileButton:"#AF4D5B",
-        // socialBlue:"#1877f2",
-        
-      }
+        // socialBlue:"#1877f2", 
+      },
 
     },
   },

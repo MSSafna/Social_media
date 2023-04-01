@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     min: 6
   },
+  // refreshToken:{
+  //   type:String,
+  //   default:''
+  // },
   profilePicture: {
     type: String,
     default: ''
@@ -36,6 +40,10 @@ const UserSchema = new mongoose.Schema({
   field: {
     type: String,
     require: true
+  },
+  number:{
+    type:Number,
+    require:true
   },
   Bio: {
     type: String,

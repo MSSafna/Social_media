@@ -3,12 +3,9 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const helmet = require('helmet')
 const morgan = require('morgan')
-const userRoute = require('./routes/users/users')
-const userAuth = require('./routes/users/auth')
-const userPost = require('./routes/users/posts')
-const adminRoute=require('./routes/Admin/adminauth')
+const userRoute = require('./routes/Users/users')
+const userPost = require('./routes/Users/posts')
 var cors = require('cors')
-const authRoutes=require('./routes/users/auth')
 const cookieParser = require('cookie-parser')
 const app = express()
 
@@ -29,11 +26,9 @@ app.use(cors({
   method:["GET","POST"],
   credentials:true
 }))
-app.use('/',authRoutes)
+
 app.use('/api/user', userRoute)
-app.use('/api/auth', userAuth)
 app.use('/api/posts', userPost)
-app.use('/api/admin',adminRoute)
 
 
 app.listen(4000, () => {

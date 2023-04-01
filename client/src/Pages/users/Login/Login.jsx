@@ -1,3 +1,5 @@
+/* eslint-disable quote-props */
+/* eslint-disable object-curly-spacing */
 /* eslint-disable import/newline-after-import */
 /* eslint-disable import/order */
 /* eslint-disable camelcase */
@@ -10,63 +12,47 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
-import { UseruseContext } from '../../../../Context/Context';
+import { UseruseContext } from '../../../Context/Context';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCookies } from 'react-cookie';
-import jwtDecode from 'jwt-decode';
+import { Cookies } from 'react-cookie';
+
 function login() {
-  const { userDetails, setUserDetails } = UseruseContext();
+  const { setUserDetails } = UseruseContext();
   const navigate = useNavigate();
   const [boolean, setBoolean] = useState(false);
   const initialValues = { email: '', password: '' };
   const [values, setValues] = useState(initialValues);
   const [formErrors, setFormErros] = useState({});
   const [isSubmit, setSubmit] = useState(false);
-  const [cookies, removeCookie] = useCookies();
+  const cookies = new Cookies();
+
   useEffect(() => {
-    console.log('ggggggggggggggg');
-    if (cookies.jwt) {
-      axios.post(
-        '/api/auth',
-        {},
-        { withCredentials: true },
-      ).then((response) => {
-        // eslint-disable-next-line no-unused-vars
-        if (!response.data.status) {
-          removeCookie('jwt');
-          navigate('/');
-        } else {
-          navigate('/home');
-        }
-      });
-    }
-  }, []);
-  const handleForm = ((e) => {
-    e.preventDefault();
-    setFormErros(validate(values));
-    setSubmit(true);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       axios.post(
-        '/api/auth/login',
+        '/api/user/login',
         { ...values },
         { withCredentials: true },
       ).then((response) => {
-        if (response.data.email) {
-          toast.error('invalid email id');
-        } else if (response.data.password) {
-          toast.error('invalid Password');
+        if (response.data.UsernotFound) {
+          toast.error('User not Found');
+        } else if (response.data.passwordNotMatch) {
+          toast.error('Invalid password');
         } else {
-          const accessToken = { jwt: response.data.token };
-          toast.success('loggin successfully');
-          setUserDetails(accessToken);
-          setTimeout(() => {
-            navigate('/home');
-          }, 1000);
+          const jwtToken = cookies.get('jwt');
+          setUserDetails({ jwt: jwtToken });
+          localStorage.setItem('jwt', JSON.stringify(jwtToken));
+          navigate('/home');
         }
       }).catch((error) => {
         console.log(error);
       });
     }
+  }, [formErrors]);
+
+  const handleForm = ((e) => {
+    e.preventDefault();
+    setFormErros(validate(values));
+    setSubmit(true);
   });
 
   const validate = ((formValues) => {
@@ -150,7 +136,7 @@ function login() {
                     </svg>
                   )}
               </div>
-              <button className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300" type="sumbit">Login</button>
+              <button className="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300" type="submit">Login</button>
             </form>
             <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
               <hr className="border-gray-400" />
@@ -181,6 +167,7 @@ function login() {
           </div>
         </div>
       </section>
+      
     </div>
   );
 }
