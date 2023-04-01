@@ -5,10 +5,12 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const userRoute = require('./routes/Users/users')
 const userPost = require('./routes/Users/posts')
+const bodyParser = require("body-parser");
 var cors = require('cors')
 const cookieParser = require('cookie-parser')
 const app = express()
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 dotenv.config();
 mongoose.connect(process.env.MONGO_URL,{useNewUrlParser:true,useUnifiedTopology:true}, () => {
@@ -20,6 +22,7 @@ mongoose.connect(process.env.MONGO_URL,{useNewUrlParser:true,useUnifiedTopology:
 app.use(cookieParser())
 app.use(express.json())
 app.use(helmet())
+
 app.use(morgan('common'))
 app.use(cors({
   origin:["http://localhost:3000"],

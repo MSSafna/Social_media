@@ -13,6 +13,12 @@ function Feeds() {
   const user = jwtDecode(userDetails.jwt);
   const userId = user.userDetails._id;
 
+
+  const handleDataFromChild = (data) => {
+    console.log('dataparent',data.data);
+     setPosts([data.data,...posts]);
+  };
+
   useEffect(() => {
     const fetchPost = (async () => {
       const jwtToken = localStorage.getItem('jwt');
@@ -25,14 +31,14 @@ function Feeds() {
           },
         },
       );
-      setPosts(res.data.result);
+        setPosts(res.data.result);
     });
     fetchPost();
   }, []);
   console.log(posts, 'posts');
   return (
     <div>
-      <Message />
+      <Message onData={handleDataFromChild} />
       <div>
         {posts.map((post) => (
           <Posts key={post._id} image={post}  />

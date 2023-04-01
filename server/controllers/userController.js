@@ -3,6 +3,7 @@ const Posts=require('../models/Posts')
 const Comment=require('../models/Comment')
 const jwt = require("jsonwebtoken");
 const ReplayComment = require('../models/ReplayComment');
+const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
   cloud_name: 'do4my2sxk',
@@ -33,39 +34,38 @@ module.exports = {
     },
  
     //....................................................................postPost....................
-  postPost: async(req,res)=>{
-     console.log(req.body,'reacheddd');
-     const {pic,message,userJwt} = req.body
-   const user=jwt.decode(userJwt)
-   console.log(user,'user');
-   if (message && pic) {
-     var data = {
-       userId: user.userDetails._id,
-       caption: message,
-       imageName: pic
-     }
-   } else if (message) {
-     data = {
-       userId: user.userDetails._id,
-       caption: message,
-     }
-   } else {
-     data = {
-       userId: user.userDetails._id,
-       imageName: pic,
-     }
-   }
- 
-   const newPost = new Posts(data)
-   console.log(newPost, "newPost");
-   try {
-     const savedPost = await newPost.save()
-     res.status(200).json(savedPost)
-   } catch (err) {
-     console.log(err);
-     res.status(500).json(err)
-   }
-   },
+    postPost: async (req, res) => {
+      const { message, userId } = req.body;
+    
+      const file = req.file.path;
+    
+      try {
+        const imageUrl = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload(file, (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result.url);
+            }
+          });
+        });
+    
+        const data = {
+          userId: userId,
+          caption: message,
+          imageName: imageUrl,
+        };
+    
+        const newPost = new Posts(data);
+        const savedPost = await newPost.save();
+        const post = await Posts.findOne({ _id: savedPost._id }).populate('userId');
+        res.status(200).json(post);
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    },
+    
 
    //............................................getSearchUser....................................
     getSearchUser:async (req,res)=>{

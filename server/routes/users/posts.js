@@ -5,8 +5,12 @@ require('dotenv').config()
 const multer =  require('multer')
 const JWTVerify=require('../../middleware/JWTVerify')
 const userController = require('../../controllers/userController')
-const storage=multer.memoryStorage();
-const upload=multer({storage:storage})
+// const storage=multer.memoryStorage();
+// const upload=multer({storage:storage})
+const upload = multer({
+  storage: multer.diskStorage({}),
+  limits: { fileSize: 1000000 },
+});
  
 
 //......................................getPosts...........................................................
@@ -14,7 +18,7 @@ const upload=multer({storage:storage})
 router.get('/timeline/:userId',JWTVerify.JWTVerify,userController.getPosts)
 // ........................................createposts..........................................
 
-router.post('/', userController.postPost)
+router.post('/',upload.single('file'), userController.postPost)
 
 //..........................................postComment........................................
 router.post('/:id/comment',userController.postComment)

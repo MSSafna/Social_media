@@ -10,45 +10,41 @@ import { UseruseContext } from '../../../Context/Context';
 import { CLOUDINARY_BASEURL } from '../../../cloudinary';
 import Avatar from '../Avatar/Avatar';
 
-function Message() {
+function Message(props) {
   const navigate = useNavigate();
   const { userDetails } = UseruseContext();
-  const [pic, setPic] = useState();
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('')
   const user = jwtDecode(userDetails.jwt);
+  const userId = user.userDetails._id;
+  const [imageFile ,setimageFile]=useState()
+
 
   const setFile = ((file) => {
-    setLoading(true);
-    const data = new FormData();
-    data.append('file', file);
-    data.append('upload_preset', 'social_media');
-    data.append('cloud_name', 'do4my2sxk');
-    fetch(CLOUDINARY_BASEURL, {
-      method: 'post',
-      body: data,
-    }).then((res) => {
-      // eslint-disable-next-line no-shadow
-      res.json().then((data) => {
-        setPic(data.url.toString());
-        setLoading(false);
-      });
-    }).catch((error) => {
-      console.log(error);
-      setLoading(false);
-    });
+    setimageFile(file)
+
   });
 
   const uploadPost = (async (e) => {
-    const userJwt = userDetails.jwt;
+   
     e.preventDefault();
+     const data = new FormData();
+    data.append('file', imageFile);
+    data.append('message',message);
+    data.append('userId',userId)
     try {
-      pic || message ? await axios.post('/api/posts', {
-        pic, message, userJwt,
-      }) : navigate('/home');
-      location.reload();
+ const post= await axios.post('/api/posts', 
+        data,
+        {
+
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      ) 
+       props.onData(post)
+       setimageFile(null)
     } catch (error) {
-      console.log(error);
+      alert(error)
     }
   });
 
@@ -71,10 +67,10 @@ function Message() {
         </div>
       </div>
       <hr className="w-full h-1  bg-gray-100 border-0 rounded  dark:bg-gray-700" />
-      {pic && (
+      {imageFile && (
         <div className="">
-          <img src={pic} alt="" className=" h-64 w-full" />
-          <CloseButton onClick={() => setPic(null)} />
+          <img src={URL.createObjectURL(imageFile)}alt="" className=" h-64 w-full" />
+          <CloseButton onClick={() => setimageFile(null)} />
         </div>
       )}
       <form onSubmit={uploadPost}>
@@ -101,7 +97,7 @@ function Message() {
             colorScheme="green"
             size="sm"
             type="submit"
-            isLoading={loading}
+            
           >
             Share
           </Button>
