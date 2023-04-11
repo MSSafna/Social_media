@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  banner:{
+    type: String,
+    default: ''
+  },
   followers: {
     type: Array,
     default: []
@@ -45,7 +49,7 @@ const UserSchema = new mongoose.Schema({
     type:Number,
     require:true
   },
-  Bio: {
+  bio: {
     type: String,
     max: 50
 

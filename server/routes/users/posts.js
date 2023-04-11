@@ -9,14 +9,14 @@ const userController = require('../../controllers/userController')
 // const upload=multer({storage:storage})
 const upload = multer({
   storage: multer.diskStorage({}),
-  limits: { fileSize: 1000000 },
+
 });
  
 
 //......................................getPosts...........................................................
 
 router.get('/timeline/:userId',JWTVerify.JWTVerify,userController.getPosts)
-// ........................................createposts..........................................
+// ........................................postposts..........................................
 
 router.post('/',upload.single('file'), userController.postPost)
 
@@ -37,38 +37,16 @@ router.get('/:id/replaycomment',userController.getReply)
 // ........................................deletePost.........................................
 router.delete('/:id/deletepost', userController.deletePost)
 
+//................................................deleteCommet..............................
+router.delete('/deletecomment',userController.deleteComment)
 
-// .......................................updatepost.....................................
 
-router.put('/:id', async (req, res) => {
-  try {
-    const post = await Posts.findById(req.params.id)
-    if (post.userId === req.body.userId) {
-      await post.updateOne({ $set: req.body })
-      res.status(200).json('post updated')
-    } else {
-      res.status(200).json('you can update only userpost')
-    }
-  } catch (err) {
-    res.status(500).json(err)
-  }
-})
+//................................................editPost...............................
+router.put('/editpost',upload.single('file'),userController.editPost)
 
 // ..........................................like and unlike.....................................
-router.put('/:id/like', async (req, res) => {
-  try {
-    const post = await Posts.findById(req.params.id)
-    if (!post.likes.includes(req.body.userId)) {
-      await post.updateOne({ $push: { likes: req.body.userId } })
-      res.status(200).json('post liked')
-    } else {
-      await post.updateOne({ $pull: { likes: req.body.userId } })
-      res.status(200).json('post unliked')
-    }
-  } catch (err) {
-    res.status(500).json(err)
-  }
-})
+router.put('/:id/like', userController.likeAndUnlike)
+
 
 // ...............................................get a post......................................
 router.get('/:id', async (req, res) => {
@@ -82,7 +60,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-//..........................................................get  timeline.........................
+
 
 
 

@@ -1,5 +1,4 @@
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable no-underscore-dangle */
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
@@ -12,6 +11,7 @@ function Feeds() {
   const { userDetails } = UseruseContext();
   const user = jwtDecode(userDetails.jwt);
   const userId = user.userDetails._id;
+  const[getPosts,setGetPosts]=useState(false)
 
 
   const handleDataFromChild = (data) => {
@@ -32,16 +32,24 @@ function Feeds() {
         },
       );
         setPosts(res.data.result);
+        setGetPosts(false)
     });
     fetchPost();
-  }, []);
+    
+  }, [getPosts]);
+
+  const handlePost=(boolean)=>{
+ 
+    setGetPosts(boolean)
+  }
   console.log(posts, 'posts');
   return (
-    <div>
+    <div className=''>
+      
       <Message onData={handleDataFromChild} />
       <div>
         {posts.map((post) => (
-          <Posts key={post._id} image={post}  />
+          <Posts key={post._id} image={post}  handleGetPost={handlePost} />
         ))}
       </div>
     </div>

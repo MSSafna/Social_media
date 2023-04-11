@@ -1,8 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable react/button-has-type */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-lone-blocks */
-/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';

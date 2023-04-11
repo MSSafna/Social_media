@@ -1,13 +1,4 @@
-/* eslint-disable quote-props */
-/* eslint-disable object-curly-spacing */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable import/order */
-/* eslint-disable camelcase */
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable react/button-has-type */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-unused-vars */
+
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';

@@ -29,7 +29,7 @@ function Users() {
               <Route element={<Layout/>}>
 
               <Route path="/home" element={<Home />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:id" element={<Profile />} />
               </Route>
             </Route>
           </Route>

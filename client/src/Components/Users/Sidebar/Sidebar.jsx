@@ -1,32 +1,30 @@
-/* eslint-disable react/button-has-type */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable camelcase */
-/* eslint-disable no-import-assign */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-// import { useCookies } from 'react-cookie';
+
+import React, { useState, useEffect, } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import { Cookies, useCookies } from 'react-cookie';
 import Cards from '../Card/Cards';
 import More from '../More/More';
 import { UseruseContext } from '../../../Context/Context';
+import { Link } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+
 
 function Sidebar(props) {
-  // const [jwt, setJwt] = useState(localStorage.getItem('jwt') || '');
+
   const navigate = useNavigate();
+  const {id} = useParams()
+  
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const { userDetails, setUserDetails } = UseruseContext();
 
+  const user = jwtDecode(userDetails.jwt);
+  const userId = user.userDetails._id;
 
-  const non_activeElements = 'block gap-2 flex py-3 hover:bg-teal-200 -mx-1 px-1 rounded-md transition-all hover:scale-110 hover:shadow-gray-300 mt-2 ';
-  const activeElements = 'block flex gap-2 py-3 bg-teal-400  text-white rounded-md shadow-md -mx-4 px-4';
+  const non_activeElements = 'block gap-2 flex py-3  hover:bg-orange-800 hover:text-white  -mx-1 px-1 rounded-md transition-all hover:scale-110 hover:shadow-gray-300 mt-2 ';
+  const activeElements = 'block flex gap-2 py-3  bg-orange-900 text-white rounded-md shadow-md -mx-4 px-4';
    
   const {pathname}=location
+  console.log(pathname, "pathnamee")
   
   const logout = (() => {
     removeCookie('jwt');
@@ -39,13 +37,7 @@ function Sidebar(props) {
 
       <div className="w-64 mt-2    ">
         <Cards>
-          <div className='font-mono	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; text-3xl
-      font-semibold  text-teal-900'
-
-          >
-            Book my TIME
-          </div>
-          <h2 className="text-gray-500 mb-2">Navigation</h2>
+          
 
           <p
             className={pathname == '/home'? activeElements : non_activeElements}
@@ -61,9 +53,9 @@ function Sidebar(props) {
           </p>
 
           <p
-             className={pathname == '/profile'? activeElements : non_activeElements}
+             className={pathname == `/profile/${userId}`? activeElements : non_activeElements}
             onClick={()=>{
-              navigate('/profile')
+              navigate(`/profile/${userId}`)
             }}
          
             
@@ -71,7 +63,7 @@ function Sidebar(props) {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 cursor-pointer">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="cursor-pointer"> Profile</span>
+            <span className="cursor-pointer">My Profile</span>
 
           </p>
 

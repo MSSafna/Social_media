@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/jsx-key */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 

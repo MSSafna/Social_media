@@ -1,8 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import jwtDecode from 'jwt-decode';
+
 import React from 'react';
 
 function Avatar({ size, url }) {

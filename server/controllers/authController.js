@@ -26,7 +26,8 @@ module.exports={
               password: hashedPassword,
               email: req.body.email,
               number: req.body.number,
-              field: req.body.field
+              field: req.body.field,
+              banner:'https://www.mub.eps.manchester.ac.uk/graphene/wp-content/themes/uom-theme/assets/images/default-banner.jpg'
             })
            const user= await newUser.save()
              res.json({user:true})

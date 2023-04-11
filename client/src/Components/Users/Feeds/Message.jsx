@@ -1,13 +1,10 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-restricted-globals */
-import React, { useState } from 'react';
+
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button, CloseButton } from '@chakra-ui/react';
 import jwtDecode from 'jwt-decode';
 import { UseruseContext } from '../../../Context/Context';
-import { CLOUDINARY_BASEURL } from '../../../cloudinary';
 import Avatar from '../Avatar/Avatar';
 
 function Message(props) {
@@ -17,22 +14,23 @@ function Message(props) {
   const user = jwtDecode(userDetails.jwt);
   const userId = user.userDetails._id;
   const [imageFile ,setimageFile]=useState()
-
+  const [loading,setLoding]=useState(false)
+  const[fetchUser,setFetchUser]=useState('')
 
   const setFile = ((file) => {
     setimageFile(file)
 
   });
 
-  const uploadPost = (async (e) => {
-   
+  const uploadPost = (async (e) => { 
+    setLoding(true)
     e.preventDefault();
      const data = new FormData();
     data.append('file', imageFile);
     data.append('message',message);
     data.append('userId',userId)
     try {
- const post= await axios.post('/api/posts', 
+        const post= await axios.post('/api/posts', 
         data,
         {
 
@@ -43,16 +41,27 @@ function Message(props) {
       ) 
        props.onData(post)
        setimageFile(null)
+       setMessage('')
+       setLoding(false)
     } catch (error) {
       alert(error)
     }
   });
 
+  useEffect(() => {  
+    const fetchUser=(async()=>{
+      const response= await axios.get(`/api/user/getuserdetails/${userId}`)
+      setFetchUser(response.data)
+    
+    }) 
+   fetchUser()
+
+}, []);
   return (
     <div className="bg-white shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-4/3">
       <div className="flex gap-1">
         <div className="pt-2 pl-3 ">
-          <Avatar url={user.userDetails.profilePicture} />
+          <Avatar url={fetchUser.profilePicture} />
         </div>
         <div className="p-6 w-full">
           <input
@@ -97,9 +106,9 @@ function Message(props) {
             colorScheme="green"
             size="sm"
             type="submit"
-            
+            isLoading={loading}
           >
-            Share
+           Share
           </Button>
         </div>
       </form>
