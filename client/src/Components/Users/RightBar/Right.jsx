@@ -89,24 +89,24 @@ useEffect(()=>{
         </div>
       </div> */}
 
-      <div className=" pt-10   rounded-md  w-1/6 ml-8 ">
+      <div className="   rounded-md  w-1/6  ">
 
-        <input
+        {/* <input
           type="text"
           className="w-1/6 bg-slate-200 h-10 outline-none text-center rounded-md fixed -mt-10"
           placeholder="Search your friend .."
           onChange={handleSearch}
-        />
+        /> */}
          <div>
           {!users[0] && !message && 
          
           <Suggestions  user={userSuggestions} suggestions={handleSuggestion}/>
           }
-        
+{/*         
           {users &&  
           <Suggestions   user={users} message={message} suggestions={PropsSearch} />
          
-          }
+          } */}
          </div>
 
       </div> 

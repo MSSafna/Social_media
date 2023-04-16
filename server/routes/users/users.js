@@ -51,6 +51,8 @@ router.put('/:id/follow',userController.followUser)
 //..............................................................unfollowUser...
 router.put('/:id/unfollow',userController.unfollowUser)
 
+//........................................................getfriends..
+router.get('/friends/:userId',userController.getFriends)
 
 
 

@@ -1,10 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import Message from './Message';
 import Posts from './Posts';
 import { UseruseContext } from '../../../Context/Context';
+import Avatar from '../Avatar/Avatar';
+import Right from '../RightBar/Right';
+import { useNavigate } from 'react-router';
 
 function Feeds() {
   const [posts, setPosts] = useState([]);
@@ -12,12 +14,21 @@ function Feeds() {
   const user = jwtDecode(userDetails.jwt);
   const userId = user.userDetails._id;
   const[getPosts,setGetPosts]=useState(false)
+  const[currentUser, setCurrentUser] = useState('')
+  const navigate =useNavigate()
 
 
   const handleDataFromChild = (data) => {
-    console.log('dataparent',data.data);
      setPosts([data.data,...posts]);
   };
+
+  useEffect(()=>{
+    const userDetails=(async()=>{
+      const result= await axios.get(`/api/user/getuserdetails/${userId}`)
+      setCurrentUser(result.data)
+    })
+    userDetails()
+  },[userId])
 
   useEffect(() => {
     const fetchPost = (async () => {
@@ -34,25 +45,35 @@ function Feeds() {
         setPosts(res.data.result);
         setGetPosts(false)
     });
-    fetchPost();
-    
+    fetchPost();  
   }, [getPosts]);
 
   const handlePost=(boolean)=>{
- 
     setGetPosts(boolean)
   }
-  console.log(posts, 'posts');
-  return (
-    <div className=''>
-      
+
+  return ( 
+   <div className='flex '>
+    <div className='w-4/6  ml-8 ' >
       <Message onData={handleDataFromChild} />
-      <div>
-        {posts.map((post) => (
+      <div >   
+      {posts.map((post) => (
           <Posts key={post._id} image={post}  handleGetPost={handlePost} />
         ))}
       </div>
     </div>
+    <div className='  ml-10'>
+      <div className='flex ' onClick={()=>{
+      navigate(`/profile/${userId}`)
+      }}>       
+      <Avatar size={12} url={currentUser.profilePicture}/>
+      <span className='my-2 ml-2  font-semibold'>{currentUser.username}</span>
+      </div>
+     <h1 className='my-4  text-lg text-gray-400'>Suggestions for you</h1>
+     <Right/>
+    </div>
+    </div>
+   
   );
 }
 

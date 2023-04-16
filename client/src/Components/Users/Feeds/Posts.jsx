@@ -16,7 +16,6 @@ import Modal from '../ProfileFeeds/Modal'
 import { Button } from '@chakra-ui/react';
 
 function Posts(props) {
-  console.log(props,'props');
   const {
     _id,imageName, caption, createdAt, likes,
   } = props.image;
@@ -82,9 +81,7 @@ const handledisplayComment=(boolean)=>{
    },[open,testDisplay])
 
   useEffect(() => {
-    console.log(comment,'vomme');
     const itemsToDisplay = comment.slice(0, 1 * 3);
-    console.log(itemsToDisplay,'item');
     setDisplayComment(itemsToDisplay);
     setCount(count + 1);
     setTest(false)
@@ -238,8 +235,9 @@ const saveChanges=async()=>{
                           <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                         </svg>
                       </div>
-                          </>             
-                      <textarea  defaultValue= {caption?caption:"Type your message"} className='w-full  h-32 mt-1 py-2 pl-2 text-xl' onChange={(event)=>setEditCaption(event.target.value)}></textarea>
+                                      </>
+                                          
+                      <textarea placeholder= {caption?caption:"Type your message"} className='w-full  h-32 mt-1 py-2 pl-2 text-xl' onChange={(event)=>setEditCaption(event.target.value)}></textarea>
                       
                       <div className='flex justify-center mt-1'>
 
@@ -248,6 +246,7 @@ const saveChanges=async()=>{
                       </Button>
                       </div>
                     </div>
+
                    
                   </Modal>
                   
@@ -312,6 +311,7 @@ const saveChanges=async()=>{
               ))}
           </div>
           }
+          
         </div>
         <div />
         {open && comment.length > 3 && <p onClick={viewMore} className='cursor-pointer text-end mr-20'>View more</p>}

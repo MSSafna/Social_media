@@ -103,8 +103,9 @@ module.exports = {
     const data = {
       userId: req.body.userId,
       postId: req.params.id,
-      comment: req.body.comment
+      comment: req.body.comment,
     }
+    console.log(data,'data');
     const newComment = new Comment(data);
     try {
       const savedComment = await newComment.save()
@@ -288,11 +289,16 @@ module.exports = {
   //..................................................................................deleteComment
   deleteComment:async(req,res)=>{
       const{postId,commentId}=req.query
+      console.log();
     try{
       const post=await Posts.updateOne({_id:postId},{$pull:{comments:commentId}})
-      const childComment=await Comment.deleteMany({parentcomment:commentId})
-      const comment=await Comment.deleteOne({_id:commentId})
-      res.status(200).json({deletedComment:true})
+       const childComment=await Comment.findOne({_id:commentId})
+       console.log(childComment,'childddd...................................... ');
+         if(childComment.parentcomment){
+          await Comment.updateOne({_id:childComment.parentcomment},{$pull:{replayComment:commentId}})
+         }
+        const comment=await Comment.deleteOne({_id:commentId})
+         res.status(200).json({deletedComment:true})
       
     }catch(err){
       console.log(err);
@@ -400,7 +406,7 @@ module.exports = {
   },
 
   //............................................................likendUnlike
-  likeAndUnlike:async(req,res)=>{
+  likeAndUnlike:async (req,res) => {
       try {
         const post = await Posts.findById(req.params.id)
         if (!post.likes.includes(req.body.userId)) {
@@ -413,6 +419,25 @@ module.exports = {
       } catch (err) {
         res.status(500).json(err)
       }
+  },
+  //.............................................................getFriends
+  getFriends:async(req,res) => {
+    try{
+      const user =await  User.findById(req.params.userId)
+      const friends=await Promise.all(user.followings.map((friendId) => {
+        return  User.findById(friendId)
+      }))
+      let friendList=[]
+      friends.map((friend) => {
+        const{_id, username, profilePicture } = friend
+        friendList.push({_id, username, profilePicture})
+      })
+      res.status(200).json(friendList)
+    }catch (err) {
+      res.status(500).json(err)
+    }
+     
+
   }
 
 }

@@ -7,16 +7,19 @@ import { MdSend } from 'react-icons/md';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import {AiFillDelete} from 'react-icons/ai'
+import login from '../../../Pages/Admin/login/Adminlogin';
 
 
 
 function Comment({ value,displayComment }) {
+    
   const [state, setState] = useState({id:'',state:false})
   const [replayState, setReplayState] = useState([])
   const [newReplay, setNewReplay] = useState('')
   const [display, setDisplay] = useState({id:'',state:false})
-  const [id,setId]=useState('')
+  const [displayReplay,setDisplayReplay]=useState(false)
 
+  
   const now = moment();
   const someDate = moment(value.createdAt);
   const Time = someDate.from(now);
@@ -25,18 +28,27 @@ function Comment({ value,displayComment }) {
   const userDetails = jwtDecode(jwtToken)
   const userId = userDetails.userDetails._id
 
-  const setReplay = async (event) => {
-    var id=event.target.id;
+  const setReplay = async (event,id) => {
+     var id=event.target.id ;
     event.stopPropagation()
     const response = await axios.get(`/api/posts/${id}/replaycomment`);
     console.log(response.data,'response.data');
     setReplayState(response.data);
     if(event.target.id == display.id){
       setDisplay({id:'',state:false})
+      setDisplayReplay(false)
     }else{
       setDisplay({id:id,state:true})
+      setDisplayReplay(false)
     }
+      
+    
   }
+  
+ useEffect(()=>{
+  setReplay()
+ },[displayReplay])
+
   const handleInputEmojiClick = (event) => {
     event.stopPropagation()
   }
@@ -48,9 +60,7 @@ function Comment({ value,displayComment }) {
     event.stopPropagation()
     setState({id:id,state:!state.state})
   }
-  const submitReplay = async (event) => {
-    alert(event.target.id)
-    var id=event.target.id
+  const submitReplay = async (event,id) => { 
     try {
       const Replay = await axios.post(`/api/posts/${id}/replaycomment`, { userId: userId, postId: value.postId, comment: newReplay })
       const testingReplay = Replay.data;
@@ -71,17 +81,15 @@ function Comment({ value,displayComment }) {
   //   };
   //   fetchData();
   // }, []);
- const deleteComment=async()=>{
-     console.log(value._id,'commentId')
-   const response=  await axios.delete(`/api/posts/deletecomment?postId=${value.postId}&commentId=${value._id}`)
+ const deleteComment=async(commentId)=>{
+   const response=  await axios.delete(`/api/posts/deletecomment?postId=${value.postId}&commentId=${commentId}`)
     console.log(response,'responseee');
     if(response.data.deletedComment){
       displayComment(true)
     }
 
  }
-
- console.log(value,'value');
+ console.log(replayState,'replayState');
   return (
     <div>
       <div className=" grid justify-center overflow-auto  " >
@@ -91,7 +99,7 @@ function Comment({ value,displayComment }) {
             <div className='flex justify-between items-center'>
             <span className=" flex font-semibold justify-start ml-3">{value.userId.username}</span>
             {value.userId._id == userId && 
-            <AiFillDelete size={24} className='text-right mx-1 mt-1 cursor-pointer' onClick={deleteComment}/>
+            <AiFillDelete size={24} className='text-right mx-1 mt-1 cursor-pointer' onClick={()=>deleteComment(value._id)}/>
             }
             </div>
           
@@ -113,9 +121,9 @@ function Comment({ value,displayComment }) {
         </div>
         {state.id==value._id && state.state &&
             <div className="relative flex justify-between " onClick={handleInputEmojiClick}>
-              <InputEmoji onChange={replayComment} value={newReplay} type="text"  className="inline-block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-500 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Search" required />
+              <InputEmoji onChange={replayComment} value={newReplay} type="text"   className="inline-block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-500 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Comment" required />
               <div className='flex justify-center items-center cursor-pointer'>
-               {newReplay && <MdSend onClick={submitReplay} id={value._id} className=' mr-10  text-green-700' size={25} />}
+               {newReplay && <MdSend onClick={(event)=>submitReplay(event,value._id)} id={value._id} className=' mr-10  text-green-700' size={25} />}
               </div>
             </div>
           }
@@ -133,7 +141,7 @@ function Comment({ value,displayComment }) {
               <span className=" flex font-semibold justify-start ml-3 ">{replay.userId.username}</span>
 
               {value.userId._id == userId && 
-            <AiFillDelete size={24} className='text-right mx-1 mt-1 cursor-pointer' onClick={deleteComment}/>
+            <AiFillDelete size={24} className='text-right mx-1 mt-1 cursor-pointer' onClick={()=>deleteComment(replay._id)}/>
             }
               </div>
               <div className="flex text-xs ml-3">
@@ -155,7 +163,7 @@ function Comment({ value,displayComment }) {
 
         {replay._id==state.id && state.state &&
             <div className="relative flex justify-between " onClick={handleInputEmojiClick}>
-              <InputEmoji onChange={replayComment} value={newReplay} type="text"  className="inline-block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-500 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Search" required />
+              <InputEmoji onChange={replayComment} value={newReplay} type="text"  className="inline-block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-500 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Comment" required />
               <div className='flex justify-center items-center cursor-pointer'>
                {newReplay && <MdSend onClick={submitReplay} id={replay._id} className=' mr-10  text-green-700' size={25} />}
               </div>

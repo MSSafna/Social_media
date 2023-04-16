@@ -5,12 +5,12 @@ import Right from './Components/Users/RightBar/Right'
 function Layout() {
   return (
     <div className="mt-5  ">
-      <div className="flex full -">
+      <div className="flex ">
         <Sidebar />
-        <div className="w-3/5 mt-2 ">
+        <div className="w-full mt-2 ">
           <Outlet />
         </div >
-        <Right />
+        {/* <Right /> */}
       </div>
     </div>
 
