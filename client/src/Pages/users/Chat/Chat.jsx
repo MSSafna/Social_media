@@ -9,6 +9,8 @@ import axios from 'axios'
 import { MdSend } from 'react-icons/md';
 import {io} from 'socket.io-client'
 
+import ChatModal from '../../../Components/Users/ChatModal/ChatModal';
+
 function Chat() {
     const { userDetails } = UseruseContext();
     const user = jwtDecode(userDetails.jwt);
@@ -25,6 +27,7 @@ function Chat() {
     const [onlineUsers, setOnlineUsers] = useState([]);
     const[friendDetail,setFriendDetail]=useState('')
     const[currentUserDetails,setCurrentUser]=useState('')
+    const[handlegetConversation, setgetConversation] = useState(false)
 
 
     useEffect(() => {
@@ -58,12 +61,12 @@ function Chat() {
     useEffect(() => {
         const getConversation = async () => {
             const res = await axios.get(`/api/conversation/${userId}`)
-            const user= await  axios.get(`/api/user/getuserdetails/${userId}`)
-            setCurrentUser(user.data)
-            setConversation(res.data)
+            // const user= await  axios.get(`/api/user/getuserdetails/${userId}`)
+            // setCurrentUser(user.data)
+            setConversation(res.data)   
         }
         getConversation()
-    }, [userId])
+    }, [userId, handlegetConversation])
 
     useEffect(() => {
         const getMessage = async () => {
@@ -86,6 +89,7 @@ function Chat() {
         }
 
         const receiverId=  currentChat.members.find((member) => member != userId)
+        console.log(receiverId,'reciverids');
         socket.current.emit('sendMessage',{
            senderId: userId,
            receiverId,
@@ -102,7 +106,7 @@ function Chat() {
         }
     }
  
-   
+  console.log(message,'messageee');
 
 
     useEffect(() => {
@@ -120,13 +124,17 @@ function Chat() {
         }
         getUser()
       },[currentChat])
+
     return (
         <div>
             <div className='flex  h-[40rem] mx-8 border-2 border-neutral-400  '>
                 <div className='flex-none w-1/4 '>
                     <div >
-                        <div className='h-16  text-center pt-4 border'>
-                          <span className='text-xl font-semibold'>{currentUserDetails.username}</span> 
+                        <div className='h-16  text-center pt-4 border flex justify-center'>
+                          <span className='text-xl font-semibold  '>{currentUserDetails.username}</span> 
+                         
+                         <ChatModal setgetConversation={setgetConversation} setCurrentChat={setCurrentChat}/>
+                       
                         </div>
                         <div className='border cursor-pointer'>
                             {conversation.map((c) => (
@@ -141,7 +149,7 @@ function Chat() {
                 {currentChat ?
                         <>
                             <div className='h-16  border text-center pt-4'>
-                            <span  className='text-xl font-semibold'> {friendDetail.username}</span> 
+                            <span  className='text-xl font-semibold '> {friendDetail.username}</span> 
                             </div>
 
 

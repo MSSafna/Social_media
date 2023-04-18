@@ -17,16 +17,15 @@ function login() {
   useEffect(() => {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       axios.post(
-        '/api/admin/login',
+        '/api/admin',
         { ...values },
         { withCredentials: true },
       ).then((response) => {
-        if (response.data.admin) {
-          navigate('/dashboard');
-        } else if (response.data.password) {
-          toast.error('invalid Password');
-        } else {
-          toast.error('invalid email');
+        if (response.data == 'adminLogged') {
+          navigate('/admin-view-user');
+        } 
+         else {
+          toast.error('Invalid login details');
         }
       }).catch((error) => {
         console.log(error);

@@ -6,7 +6,7 @@ function Cards({ children, noPadding, size }) {
   if (size === 'lg') {
     width = '4/6';
   }
-  let classes = ' bg-white shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-64 fixed';
+  let classes = '  shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-64 fixed';
   if (!noPadding) {
     classes += ' p-4';
   }

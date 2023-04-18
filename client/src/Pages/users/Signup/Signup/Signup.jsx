@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // const SIGNUP_URL='/auth/register'
 function signup() {
   const initialValues = {
-    name: '', email: '', number: '', field: '', password: '', confirmPassword: '',
+    name: '', email: '', number: '', password: '', confirmPassword: '',
   };
   const navigate = useNavigate();
   const [values, setValues] = useState(initialValues);
@@ -122,21 +122,7 @@ function signup() {
                 />
                 <p style={{ color: 'red' }}>{formErrors.email}</p>
               </div>
-              <div className="relative">
-                <select
-                  name="field"
-                  className="p-2 rounded-xl border w-full"
-                  style={{ color: 'grey' }}
-                  onChange={(e) => setValues({ ...values, [e.target.name]: e.target.value })}
-                >
-                  <option>choose field</option>
-                  <option value="Producer">Producer</option>
-                  <option value="Director">Director</option>
-                  <option value="Actor">Actor</option>
-                  <option value="Actress">Actress</option>
-                </select>
-                <p style={{ color: 'red' }}>{formErrors.field}</p>
-              </div>
+              
               <div className="relative">
                 <input
                   className="p-2 rounded-xl border w-full"

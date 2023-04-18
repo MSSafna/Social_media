@@ -54,7 +54,8 @@ router.put('/:id/unfollow',userController.unfollowUser)
 //........................................................getfriends..
 router.get('/friends/:userId',userController.getFriends)
 
-
+//...................................reportPost
+ router.post('/report/:postId',userController.reportPost)
 
 
 
@@ -76,17 +77,7 @@ router.delete('/:id', async (req, res) => {
   }
 })
 
-// ..............................................get user.......................................//
-router.get('/:id', async (req, res) => {
-  console.log(req.params.id)
-  try {
-    const user = await User.findById(req.params.id)
-    const { password, createdat, ...others } = user._doc
-    res.status(200).json(others)
-  } catch (err) {
-    return res.status(500).json(err)
-  }
-})
+
 
 
 

@@ -14,6 +14,7 @@ import {FiMoreHorizontal} from 'react-icons/fi'
 import {BiCommentDetail} from 'react-icons/bi'
 import Modal from '../ProfileFeeds/Modal'
 import { Button } from '@chakra-ui/react';
+import ReportModal from './ReportModal';
 
 function Posts(props) {
   const {
@@ -170,23 +171,26 @@ const saveChanges=async()=>{
 }
 
   return (
-    <div className="bg-white shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-4/3 ">
+    <div className=" shadow-md shadow-gray-200 rounded-md mb-6 ml-5 overflow-hidden w-4/3 ">
       <div className="flex gap-2  ">
         <Link to="/profile">
           <div className="mx-2 my-2 ">
             <Avatar url={props.image.userId.profilePicture} />
           </div>
         </Link>
-        <div className="ml-2 -ml-2 mt-2 flex relative">
-          <a href=" ">
-            <span className="font-semibold ">{props.image.userId.username}</span>
-            <span className="pl-2">shared a post</span>
-            <p className="text-gray-500 text-sm ">{Time}</p>
-          </a>
-          <div className='flex justify-end w-96 ml-72 cursor-pointer  '>
-            <FiMoreHorizontal size={24} onClick={() => setOptionDisplay(!optionDisplay)}/>
-          </div>
+        <div className="ml-2 -ml-2 mt-2 flex relative whitespace-nowrap">
+        <a href=" ">
+          <span className="font-semibold ">{props.image.userId.username}</span>
+          <span className="ml-2 ">share a post</span>
+          <p className="text-gray-500 text-sm ">{Time}</p>
+        </a>
+        <div className='flex justify-end  w-full  ml-12 cursor-pointer '>
+          <span onClick={() => setOptionDisplay(!optionDisplay)}>
+            <FiMoreHorizontal size={24} />
+          </span>
         </div>
+      </div>
+
         <div className='flex bg-indigo-500  justify-end mt-8'>
           {optionDisplay &&
             <div className=' w-36 bg-white shadow-md shadow-gray-300 rounded-md pb-2  absolute  '>
@@ -256,20 +260,24 @@ const saveChanges=async()=>{
               </div>
                 }
               {userId != user &&
-                <div className='flex'>
-                  <p className='ml-5 mt-3 mb-2 cursor-pointer'>
+                <div className='flex flex-row p-5 cursor-pointer'>
+                 
+                  <span className='inline-block'>
                     <GoReport size={25} className='inline-block'/>
-                    <span className=' ml-2'>
-                      Report
-                    </span>
-                  </p>
+                  </span>  
+                  <span className=' inline-block ml-2 '>   
+                      <ReportModal  postId={_id} />
+                  </span>
+                  
+
+
                 </div>
               }
             </div>}
         </div>
       </div>
       <div className="mx-2 ">
-        <p className="my-3 text-lg">
+        <p className="my-3 text-lg ">
           {caption || null}
         </p>
         <div className="  flex  overflow-hidden  items-center">
@@ -288,17 +296,17 @@ const saveChanges=async()=>{
             {isLike
               && <img src="/images/likePost.png" className="w-8 cursor-pointer  border-none" alt="like" />}
 
-            <div className="mt-4 border-none">
+            <div className="mt-4 border-none ">
               {like}
               {' '}
               Likes
             </div>
           </button>
-          <div className='ml-10 mt-3 flex items-center'>
+          <div className='ml-10 mt-3 flex items-center '>
             <BiCommentDetail size={24}/>
               {commentLength}
-            <span className="ml-2 cursor-pointer" onClick={()=>setOpen(!open)}>
-              Comments
+            <span className="ml-2 cursor-pointer " onClick={()=>setOpen(!open)}>  
+              Comments 
             </span>
           </div>
 
@@ -325,8 +333,6 @@ const saveChanges=async()=>{
         </div>
 
       </div>
-
-
     </div>
 
   );

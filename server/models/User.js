@@ -41,10 +41,6 @@ const UserSchema = new mongoose.Schema({
     default: []
 
   },
-  field: {
-    type: String,
-    require: true
-  },
   number:{
     type:Number,
     require:true
@@ -54,7 +50,7 @@ const UserSchema = new mongoose.Schema({
     max: 50
 
   },
-  isAdmin: {
+  status: {
     type: Boolean,
     default: false
   }

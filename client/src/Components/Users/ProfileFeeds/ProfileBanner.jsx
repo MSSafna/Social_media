@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom'
 import Modal from './Modal';
 import { AiTwotoneCamera } from 'react-icons/ai'
 import FollowError from './FollowError';
+import FriendsModal from './FriendsModal';
 
 function ProfileBanner() {
   const { id } = useParams()
@@ -165,6 +166,8 @@ function ProfileBanner() {
       alert(error)
     }
   }
+
+  
   //.......................................passwordEyeControl
   const passwordView = () => {
     setViewPassword(!viewPassword)
@@ -226,7 +229,7 @@ function ProfileBanner() {
 
 
   return (
-    <div className="relative ">
+    <div className="relative  w-5/6  ">
       <div className="h-64 flex   items-center rounded-xl ml-5 ">
         {id == userId &&
           <div className='rounded-full bg-white w-8 h-8 flex  justify-center absolute -mt-48 '>
@@ -330,9 +333,10 @@ function ProfileBanner() {
             <div className='text-center flex '>
               <h1 className="font-bold text-2xl ml-6 mt-8">{details && details.username}</h1>
               <span className='text-2xl ml-12'>{details && details.followers.length}</span>
-              <p className=' ml-1 font-semibold'>Followers</p>
+              <p className=' ml-1 font-semibold'><FriendsModal name='Followers'/></p>
               <span className=' text-2xl ml-8'>{details && details.followings.length}</span>
-              <p className='ml-1 font-semibold'>Followings</p>
+              
+              <p className='ml-1 font-semibold'> <FriendsModal name='Followings'/></p>
               <p className=' text-2xl ml-8'>{userPosts.length}</p>
               <p className='ml-1 font-semibold'>Posts</p>
             </div>

@@ -58,12 +58,12 @@ function Message(props) {
 
 }, []);
   return (
-    <div className="bg-white shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-4/3">
+    <div className=" shadow-md shadow-gray-300 rounded-md mb-4 ml-5 overflow-hidden w-4/3">
       <div className="flex gap-1">
         <div className="pt-2 pl-3 ">
           <Avatar url={fetchUser.profilePicture} />
         </div>
-        <div className="p-6 w-full">
+        <div className="p-6 w-full  ">
           <input
             placeholder={`What's in your mind ${user.userDetails.username}?`}
             type="text"
@@ -97,13 +97,13 @@ function Message(props) {
             </svg>
 
             <div className="mt-3 ml-2">
-              <h1 className="font-bold">Photos or vedios</h1>
+              <h1 className="font-bold text-black">Photos or vedios</h1>
             </div>
           </div>
         </label>
         <div className="grow text-right ml-10 -mt-6 my-2 mr-2">
           <Button
-            colorScheme="green"
+            colorScheme="blue"
             size="sm"
             type="submit"
             isLoading={loading}

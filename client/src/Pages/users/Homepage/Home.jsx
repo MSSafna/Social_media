@@ -20,7 +20,10 @@ function Home() {
   }, []);
 
   return (
-    <Feeds/>
+    <div >
+
+      <Feeds/>
+    </div>
   );
 }
 

@@ -44,6 +44,9 @@ module.exports={
             if (!user) {
                 return res.json({ UsernotFound: true })
             }
+            if(user.status){
+             return res.json({userBlocked:true})
+            }
             // validate password
             const validPassword = await bcrypt.compare(req.body.password, user.password)
             if (!validPassword) {

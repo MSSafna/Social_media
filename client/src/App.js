@@ -6,8 +6,8 @@ import { UserDetails } from './Context/Context';
 function App() {
   return (
     <>
-      <UserDetails>
-        <Users />
+      <UserDetails >
+        <Users  />
       </UserDetails>
       <Admin />
     </>

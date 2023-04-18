@@ -16,8 +16,8 @@ function Conversation({conversation,currentUser}) {
   },[conversation,currentUser])
   return (
     <div className=' hover:bg-gray-300 my-4 '>
-        <div className='mx-2 my-2  flex py-1'>
-        <Avatar url={user.profilePicture}/>
+        <div className='mx-2 my-2  flex py-1  '>
+        <Avatar url={user.profilePicture} />
         <span className='mx-2 my-2 font-semibold '>{user.username}</span>
         </div>
     </div>

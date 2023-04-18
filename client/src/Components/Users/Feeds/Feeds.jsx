@@ -62,15 +62,15 @@ function Feeds() {
         ))}
       </div>
     </div>
-    <div className='  ml-10'>
+    <div className='  ml-10 ' >
       <div className='flex ' onClick={()=>{
       navigate(`/profile/${userId}`)
       }}>       
       <Avatar size={12} url={currentUser.profilePicture}/>
-      <span className='my-2 ml-2  font-semibold'>{currentUser.username}</span>
+      <span className='my-2 ml-2  font-semibold text-white'>{currentUser.username}</span>
       </div>
      <h1 className='my-4  text-lg text-gray-400'>Suggestions for you</h1>
-     <Right/>
+     <Right />
     </div>
     </div>
    

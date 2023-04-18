@@ -12,6 +12,7 @@ import login from '../../../Pages/Admin/login/Adminlogin';
 
 
 function Comment({ value,displayComment }) {
+  console.log(value,'value');
     
   const [state, setState] = useState({id:'',state:false})
   const [replayState, setReplayState] = useState([])
@@ -89,12 +90,11 @@ function Comment({ value,displayComment }) {
     }
 
  }
- console.log(replayState,'replayState');
   return (
     <div>
       <div className=" grid justify-center overflow-auto  " >
         <div className="flex mt-5">
-          <Avatar size="sm" />
+          <Avatar size="sm" url={value.userId.profilePicture} />
           <div className="border mx-5  rounded-md h-24 w-96 " style={{ background: '#f2f2f2' }}>
             <div className='flex justify-between items-center'>
             <span className=" flex font-semibold justify-start ml-3">{value.userId.username}</span>
@@ -110,7 +110,7 @@ function Comment({ value,displayComment }) {
           </div>
         </div>
         <div className='flex'>
-          <span onClick={viewReplyInput} className='ml-16 cursor-pointer' id={value._id}>
+          <span onClick={viewReplyInput} className='ml-16 cursor-pointer text-neutral-400' id={value._id}>
             reply
           </span>
           <div className='bg-indigo-500 w-grow'>

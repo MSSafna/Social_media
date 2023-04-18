@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const Posts = require('../models/Posts')
 const Comment = require('../models/Comment')
+const Report = require('../models/Report')
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt')
 const ReplayComment = require('../models/ReplayComment');
@@ -166,7 +167,6 @@ module.exports = {
       console.log(req.params);
       const deleteComment = await Comment.deleteMany({ postId: req.params.id })
       const post = await Posts.findOne({ _id: req.params.id })
-      console.log(post,'postssssssssssssss');
       if(post.imageName.trim()!=''){
         const imageUrl = post.imageName
         const urlArray = imageUrl.split('/');
@@ -360,11 +360,11 @@ module.exports = {
           if (!user.followers.includes(req.body.userId)) {
             await user.updateOne({ $push: { followers: req.body.userId } })
             await currentUser.updateOne({ $push: { followings: req.params.id } })
-            return res.status(200).json('user has been followed')
+            return res.status(200).json(user)
             
           } else  if (!currentUser.followings.includes(req.params.id)){
             await currentUser.updateOne({ $push: { followings: req.params.id } })
-            return res.status(200).json('user has been followed')
+            return res.status(200).json(user)
           }else{
             res.status(403).json('you already follow this user')
           }
@@ -438,6 +438,23 @@ module.exports = {
     }
      
 
+  },
+
+
+  //.........................................................................ReportPost
+  reportPost:async(req,res) => {
+    const values={postId :req.params.postId, problem:req.body.problem , discription : req.body.discription}
+    try{
+      const post= await Posts.findById(req.params.postId)
+      values.userId = post.userId
+      const report =new Report(values)
+      const savedReport =await report.save()
+      res.status(200).json(savedReport)
+
+    }catch(err){
+      console.log(err);
+      res.status(500).json(err)
+    }
   }
 
 }

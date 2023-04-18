@@ -5,16 +5,15 @@ const io = require('socket.io')(8900,{
     
 })
 let users=[]
-
 const addUser=(userId,socketId) => {
     !users.some(user=>user.userId === userId) && 
     users.push({userId,socketId})
-    console.log(users,'adduser');
 }
 
 const removeUser = (socketId) => {
     users=users.filter((user) => user.socketId !== socketId)
 }
+
 
 
 const getUser = (receiverId) => {
@@ -33,11 +32,10 @@ io.on("connection",(socket) => {
 
 //send and getMessage
 socket.on('sendMessage',({senderId,receiverId,text}) => { 
-    console.log(users,'usersassss');
     console.log(receiverId, 'receiverid');
    const user = getUser(receiverId)
     console.log(user,'user');
-   io.to(user.socketId).emit("getMessage", {
+   io.to( user.socketId).emit("getMessage", {
     senderId,
     text,
   });

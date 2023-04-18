@@ -8,6 +8,8 @@ const userRoute = require('./routes/Users/users')
 const userPost = require('./routes/Users/posts')
 const userConveration=require('./routes/Users/conversation')
 const userMessage=require('./routes/Users/message')
+const  adminRoute = require ('./routes/Admin/admin')
+ 
 
 const bodyParser = require("body-parser");
 var cors = require('cors')
@@ -38,7 +40,7 @@ app.use('/api/user', userRoute)
 app.use('/api/posts', userPost)
 app.use('/api/conversation', userConveration)
 app.use('/api/message',userMessage)
-
+app.use('/api/admin',adminRoute)
 
 app.listen(4000, () => {
   console.log('connected to server')

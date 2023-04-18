@@ -26,9 +26,13 @@ function login() {
       ).then((response) => {
         if (response.data.UsernotFound) {
           toast.error('User not Found');
+    
         } else if (response.data.passwordNotMatch) {
           toast.error('Invalid password');
-        } else {
+        } else if(response.data.userBlocked){
+          toast.error("User is blocked")
+        }
+        else {
           const jwtToken = cookies.get('jwt');
           setUserDetails({ jwt: jwtToken });
           localStorage.setItem('jwt', JSON.stringify(jwtToken));

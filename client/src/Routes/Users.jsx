@@ -21,7 +21,7 @@ const Profile=React.lazy(()=>import('../Pages/Users/Profile/Profile'))
 function Users() {
   const [cookies] = useCookies();
   return (
-    <div>
+    <div >
       <Router>
         <Routes>
           <Route path="/signup" element={<Signup />} />
