@@ -22,6 +22,8 @@ import axios from 'axios'
     const submitHandle=(async(e)=>{
      e.preventDefault()
     const res =  await axios.post(`/api/user/report/${postId}`,values)
+    console.log('reachedddddddddddddddddddddddddd');
+    onClose()
 
   })
      return (

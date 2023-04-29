@@ -24,7 +24,10 @@ module.exports = {
       const userPosts = await Posts.find({ userId: currentUser._id }).sort({ _id: - 1 }).populate('userId')
       const friendPosts = await Promise.all(
         currentUser.followings.map((friendId) => {
-          return Posts.find({ userId: friendId }).sort({ _id: - 1 }).populate('userId');
+          return Posts.find({ userId: friendId, status: { $ne: true } })
+          .sort({ _id: -1 })
+          .populate('userId');
+        
         })
       )
       let result = userPosts.concat(...friendPosts).sort((a, b) => b.createdAt - a.createdAt)
@@ -38,18 +41,27 @@ module.exports = {
   //....................................................................postPost....................
   postPost: async (req, res) => {
     const { message, userId } = req.body;
+    console.log(req.files,'req.filrrrrrrrrrrrresss');
+    let imageUrl=[]
     try {
-      if (req.file) {
-        const file = req.file.path;
-        const imageUrl = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload(file, (err, result) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result.url);
-            }
+      if (req.files) {
+       
+        // const file = req.files;
+        // console.log(file,'fileee');
+        for(value of req.files){
+         let file = value.path
+           let url = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload(file, (err, result) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result.url);
+              }
+            });
           });
-        });
+          imageUrl.push(url)
+        }
+        console.log(imageUrl,'imageurl...');
         var data = {
           userId: userId,
           caption: message,
@@ -165,15 +177,20 @@ module.exports = {
   deletePost: async (req, res) => {
     try {
       console.log(req.params);
+      let imageUrl
       const deleteComment = await Comment.deleteMany({ postId: req.params.id })
       const post = await Posts.findOne({ _id: req.params.id })
-      if(post.imageName.trim()!=''){
-        const imageUrl = post.imageName
-        const urlArray = imageUrl.split('/');
-        const image = urlArray[urlArray.length - 1]
-        const imageName = image.split('.')[0]
-        const response = await cloudinary.uploader.destroy(imageName, { invalidate: true, resource_type: "image" },)
-      }
+      // if(post.imageName.length>0){
+      //    imageUrl =[...post.imageName] 
+      //    console.log(imageUrl,'imageUrl');
+      //    imageUrl.map((url) => {
+      //      const urlArray = imageUrl.split('/');
+      //      console.log(urlArray,'urlArray');
+      //    })
+      //   const image = urlArray[urlArray.length - 1]
+      //   const imageName = image.split('.')[0]
+      //   const response = await cloudinary.uploader.destroy(imageName, { invalidate: true, resource_type: "image" },)
+      // }
       const deletePost = await Posts.deleteOne({ _id: req.params.id })
       res.json('succcessfully deleted')
     } catch (err) {
@@ -281,6 +298,38 @@ module.exports = {
     try {
       const result = await User.findById({ _id: req.params.id })
       res.status(200).json(result)
+       
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+
+  //..............................getFollowers andFollowinssetils
+  getFriendDetails:async(req, res) => {
+    try {
+      const result = await User.findById({ _id: req.params.userId })
+       const followersDetails =await Promise.all(result.followers.map((userId)=>{
+              return User.findById(userId)  
+       }))
+
+      let followersFriendList=[]
+       followersDetails.map((friend) => {
+         const{_id, username, profilePicture } = friend
+         followersFriendList.push({_id, username, profilePicture})
+       })
+            const followingDetails =await Promise.all(result.followings.map((userId)=>{
+           return  User.findById(userId)
+    
+         }))
+
+      let followingsFriendList=[]
+      followingDetails.map((friend) => {
+        const{_id,username,profilePicture} = friend
+        followingsFriendList.push({_id,username,profilePicture})
+      })
+         res.status(200).json({followersFriendList,followingsFriendList})
+      
     } catch (err) {
       console.log(err);
     }
@@ -289,7 +338,7 @@ module.exports = {
   //..................................................................................deleteComment
   deleteComment:async(req,res)=>{
       const{postId,commentId}=req.query
-      console.log();
+
     try{
       const post=await Posts.updateOne({_id:postId},{$pull:{comments:commentId}})
        const childComment=await Comment.findOne({_id:commentId})
@@ -304,6 +353,20 @@ module.exports = {
       console.log(err);
     }
   },
+
+  //......................................................................editComment
+  editComment:async (req, res) => {
+    console.log(req.body);
+     const {commentId} =req.query;
+     try{
+
+       const result = await Comment.updateOne({_id:commentId},{$set:{comment:req.body.comment}})
+       res.status(200).json(result)
+     }catch(err){
+      res.status(500).json(err)
+     }
+  },
+
   //............................................................................getSuggestions
 
   getSUggestions:async(req,res)=>{
@@ -445,17 +508,38 @@ module.exports = {
   reportPost:async(req,res) => {
     const values={postId :req.params.postId, problem:req.body.problem , discription : req.body.discription}
     try{
-      const post= await Posts.findById(req.params.postId)
-      values.userId = post.userId
-      const report =new Report(values)
-      const savedReport =await report.save()
-      res.status(200).json(savedReport)
+      const reportedPost = await Report.findOne({postId:req.params.postId})
+      if(reportedPost){
+        await Report.updateOne({_id:reportedPost._id},{$push:{problem:req.body.problem}})
+      }else{
+        const post= await Posts.findById(req.params.postId)
+          await Posts.updateOne({_id:req.params.postId},{$push:{problem:values.problem}})
+          values.userId = post.userId
+          const report =new Report(values)
+          const savedReport =await report.save()
+      }
+      
+      res.status(200).json('reported')
 
     }catch(err){
       console.log(err);
       res.status(500).json(err)
     }
-  }
+  },
+  //................................................removeFollower
+  removeFollower:async (req,res) => {
+    try{
+      const currentUser =await User.findById(req.body.userId)
+      const  followerUser =await User.findById(req.params.userId)
+      await currentUser.updateOne({$pull:{followers:req.params.userId}})
+      await followerUser.updateOne({$pull:{followings:req.body.userId}})
+      res.status(200).json('removed')
+
+    }catch(err){
+      res.status(500).json(err)
+    }
+  } 
+
 
 }
 

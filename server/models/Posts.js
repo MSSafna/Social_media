@@ -16,13 +16,17 @@ const PostsSchema = new mongoose.Schema(
       ref:'Comments'
      }],
     imageName: {
-      type: String,
-      default:""
+      type: Array,
+      default:[]
     },
     likes: {
       type: Array,
       default: []
     },
+    status:{
+      type:Boolean,
+      default:false
+    }
    
   },
 

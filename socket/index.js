@@ -17,7 +17,6 @@ const removeUser = (socketId) => {
 
 
 const getUser = (receiverId) => {
-    console.log(users,'userssss');
     return users.find((user) => user.userId == receiverId);
   };
 
@@ -42,6 +41,7 @@ socket.on('sendMessage',({senderId,receiverId,text}) => {
 })
 
    socket.on("disconnect",() => {
+    console.log(users,'userssss');
     console.log("a user disconnected!");
     removeUser(socket.id)
     io.emit("getUsers",users)

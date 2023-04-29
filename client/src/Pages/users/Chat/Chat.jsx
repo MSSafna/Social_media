@@ -61,8 +61,8 @@ function Chat() {
     useEffect(() => {
         const getConversation = async () => {
             const res = await axios.get(`/api/conversation/${userId}`)
-            // const user= await  axios.get(`/api/user/getuserdetails/${userId}`)
-            // setCurrentUser(user.data)
+            const user= await  axios.get(`/api/user/getuserdetails/${userId}`)
+            setCurrentUser(user.data)
             setConversation(res.data)   
         }
         getConversation()

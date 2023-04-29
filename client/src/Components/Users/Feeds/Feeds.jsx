@@ -16,7 +16,7 @@ function Feeds() {
   const[getPosts,setGetPosts]=useState(false)
   const[currentUser, setCurrentUser] = useState('')
   const navigate =useNavigate()
-
+   let count=0
 
   const handleDataFromChild = (data) => {
      setPosts([data.data,...posts]);
@@ -31,6 +31,7 @@ function Feeds() {
   },[userId])
 
   useEffect(() => {
+    count++
     const fetchPost = (async () => {
       const jwtToken = localStorage.getItem('jwt');
       const jwt = JSON.parse(jwtToken);
@@ -46,6 +47,7 @@ function Feeds() {
         setGetPosts(false)
     });
     fetchPost();  
+    console.log(count,'count');
   }, [getPosts]);
 
   const handlePost=(boolean)=>{
@@ -67,7 +69,7 @@ function Feeds() {
       navigate(`/profile/${userId}`)
       }}>       
       <Avatar size={12} url={currentUser.profilePicture}/>
-      <span className='my-2 ml-2  font-semibold text-white'>{currentUser.username}</span>
+      <span className='my-2 ml-2  font-semibold '>{currentUser.username}</span>
       </div>
      <h1 className='my-4  text-lg text-gray-400'>Suggestions for you</h1>
      <Right />

@@ -5,13 +5,17 @@ const ReportSchema = new mongoose.Schema({
       ref:'Posts'
     },
     problem:{
-        type:String
+        type:Array
     },
    userId:{
       type:String
    },
    discription:{
     type: String
+   },
+  status:{
+    type:Boolean,
+    default:false
    }
 },
     { timestamps: true }

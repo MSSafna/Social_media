@@ -6,6 +6,8 @@ import { Button, CloseButton } from '@chakra-ui/react';
 import jwtDecode from 'jwt-decode';
 import { UseruseContext } from '../../../Context/Context';
 import Avatar from '../Avatar/Avatar';
+import SimpleImageSlider from "react-simple-image-slider";
+import { ToastContainer, toast } from 'react-toastify';
 
 function Message(props) {
   const navigate = useNavigate();
@@ -13,23 +15,44 @@ function Message(props) {
   const [message, setMessage] = useState('')
   const user = jwtDecode(userDetails.jwt);
   const userId = user.userDetails._id;
-  const [imageFile ,setimageFile]=useState()
+  const [imageFile ,setimageFile]=useState([])
   const [loading,setLoding]=useState(false)
   const[fetchUser,setFetchUser]=useState('')
+  const [imageUrls, setImageUrls] = useState([]);
+  let urls=[]
 
-  const setFile = ((file) => {
-    setimageFile(file)
+  const setFile = ((event) => {
+
+    const files=event.target.files
+    if(files.type ==='images/jpeg'|| files.type==='images/png'){
+      console.log(files.type,'kfbfbsb');
+      setimageFile(files)
+      for (let i = 0; i < files.length; i++) {  
+       const url = URL.createObjectURL(files[i]);
+        urls.push(url);
+      }
+      setImageUrls(urls);
+      console.log(image,'umgesss');
+    }else{
+      alert("Invalid file format")
+    }
+    
 
   });
 
   const uploadPost = (async (e) => { 
-    setLoding(true)
     e.preventDefault();
+    console.log(imageFile,'imageFile');
+     setLoding(true)
      const data = new FormData();
-    data.append('file', imageFile);
+     for(let i=0 ;i<imageFile.length;i++){
+       data.append('file', imageFile[i]);
+     }
     data.append('message',message);
     data.append('userId',userId)
+    console.log([...data]);
     try {
+     
         const post= await axios.post('/api/posts', 
         data,
         {
@@ -40,14 +63,15 @@ function Message(props) {
         }
       ) 
        props.onData(post)
-       setimageFile(null)
+       setimageFile([])
+       urls=[]
+       setImageUrls([]);
        setMessage('')
        setLoding(false)
     } catch (error) {
       alert(error)
     }
   });
-
   useEffect(() => {  
     const fetchUser=(async()=>{
       const response= await axios.get(`/api/user/getuserdetails/${userId}`)
@@ -76,12 +100,40 @@ function Message(props) {
         </div>
       </div>
       <hr className="w-full h-1  bg-gray-100 border-0 rounded  dark:bg-gray-700" />
-      {imageFile && (
-        <div className="">
-          <img src={URL.createObjectURL(imageFile)}alt="" className=" h-64 w-full" />
-          <CloseButton onClick={() => setimageFile(null)} />
-        </div>
+      {imageUrls.length>0 && (
+        <>
+        <CloseButton onClick={() =>{ 
+          setimageFile([])
+          setImageUrls([])
+          }} />
+         
+
+         <SimpleImageSlider
+         width={800}
+         height={350}
+        images={imageUrls}
+         showBullets={true}
+         showNavs={true}
+        
+         />
+          
+        </>
       )}
+      {/* {imageFile && Object.values(imageFile).map((file) => (
+        // <div className="">
+        //   <img src={URL.createObjectURL(file)} alt="" className="h-64 w-full" />
+        //   <CloseButton onClick={() => setimageFile(null)} />
+        // </div>
+         <SimpleImageSlider
+        width={896}
+        height={504}
+        images={URL.createObjectURL(file)}
+        showBullets={true}
+        showNavs={true}
+      />
+      ))} */}
+
+         
       <form onSubmit={uploadPost}>
         <label>
           <div className="flex">
@@ -90,7 +142,8 @@ function Message(props) {
               type="file"
               id="file"
               accept="image/*"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={setFile}
+              multiple={true}
             />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" className="fill-red-500 w-8 h-8 ml-10 mt-2  cursor-pointer" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />

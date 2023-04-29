@@ -1,9 +1,34 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Pagination from './Pagination';
+import Filter from './Filter'
 
 function Table() {
   const [values, setUser] = useState([]);   
+  const [currentPage, setCurrentpage] = useState(1);
+  const [postPerPage, setPostPerPage] = useState(10);
+  const [filteredTextValue, setFilterTextValue] = useState('all')
+  const options =['all' , 'blocked', 'unblock']
+
+
+ 
+  
+
+  const lastPostIndex = currentPage * postPerPage
+  const  firstPostIndex = lastPostIndex - postPerPage
+  const currentPost = values.slice(firstPostIndex,lastPostIndex)
+
+  let filterdValue = currentPost.filter((user) =>{
+    if(filteredTextValue === 'blocked'){
+    return  user.status === true
+    }else if( filteredTextValue ===  'unblock'){  
+      return  user.status  === false
+    }else{
+      return user
+    }
+    
+  })
   useEffect(() => {
     getallusers();
   }, []);
@@ -18,18 +43,20 @@ function Table() {
   }
  
   const controlUserState =(async(e, userId) => {
-   console.log(e.target.checked,userId);
-   console.log(userId);
    const status = e.target.checked
    const res = await axios.put(`api/admin/status?userId=${userId}&status=${status}`);
-   console.log(res);
-
   })
-   
+
+  const filterHandle=(filterValue) => {
+    setFilterTextValue(filterValue)
+  }
+
+
   return (
     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8 ">
       <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8 ">
         <div className="overflow-hidden">
+          <Filter filterHandle={filterHandle} options={options}/>
           <table className="min-w-full  relative">
             <thead className="border-b">
               <tr>
@@ -43,30 +70,22 @@ function Table() {
                   Email
                 </th>
                 <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                  Field
-                </th>
-                <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                   Options
                 </th>
               </tr>
             </thead>
             <tbody>
               {
-               values.map((element, i) => (
-
+               filterdValue.map((element,i ) => (
                  <tr className="border-b">
-               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{i + 1}</td>
+               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{  firstPostIndex +i+1 }</td>
+               
                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                      {element.username}
                    </td>
                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                      {element.email}
                    </td>
-                   <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                     {element.field}
-
-                   </td>
-                  
                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                      <label className="inline-flex relative items-center mr-5 cursor-pointer">
                       {element.status ? 
@@ -79,7 +98,9 @@ function Table() {
                  </tr>
                ))
               }
-
+              <div className='p-2 '>
+             <Pagination  totalPost = {values.length} postPerPage={postPerPage} setCurrentpage={setCurrentpage}  currentPage={currentPage}/>
+              </div>
             </tbody>
           </table>
 

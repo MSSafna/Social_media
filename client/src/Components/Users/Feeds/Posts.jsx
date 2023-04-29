@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState,useRef,createContext } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
@@ -15,14 +15,19 @@ import {BiCommentDetail} from 'react-icons/bi'
 import Modal from '../ProfileFeeds/Modal'
 import { Button } from '@chakra-ui/react';
 import ReportModal from './ReportModal';
+import SimpleImageSlider from "react-simple-image-slider";
+import './imageSlider.css'
 
 function Posts(props) {
+  console.log(props,'props post')
   const {
     _id,imageName, caption, createdAt, likes,
   } = props.image;
 
   const userId = props.image.userId._id
   const postRef=useRef()
+  const MyContext = createContext();
+
   const [like, setLike] = useState(likes.length);
   const [isLike, setISLike] = useState(false);
   const [open, setOpen] = useState(false);
@@ -39,9 +44,12 @@ function Posts(props) {
   const[updateFile,setUpdateFile]=useState('') 
   const[editCaption,setEditCaption]=useState('')
   const[loading,setLoading]=useState(false)
+  const [handleComment, setHandleComment] =useState(false)
 
 
-
+   const editCommentHandle=()=>{
+   setHandleComment(true)
+   }
 
   const now = moment();
   const someDate = moment(createdAt);
@@ -73,13 +81,14 @@ const handledisplayComment=(boolean)=>{
          const allComments = await axios.get(`/api/posts/${props.image._id}/getcomment`);
          setComment(allComments.data);
          setCommentLength(allComments.data.length)
+         setHandleComment(false)
          
        } catch (error) {
          console.log(error);
        }
      };
      viewComment( )
-   },[open,testDisplay])
+   },[open,testDisplay,handleComment])
 
   useEffect(() => {
     const itemsToDisplay = comment.slice(0, 1 * 3);
@@ -169,6 +178,8 @@ const saveChanges=async()=>{
  {props.handleGetPost(true)}
 
 }
+
+
 
   return (
     <div className=" shadow-md shadow-gray-200 rounded-md mb-6 ml-5 overflow-hidden w-4/3 ">
@@ -281,7 +292,18 @@ const saveChanges=async()=>{
           {caption || null}
         </p>
         <div className="  flex  overflow-hidden  items-center">
-          {imageName ? <img src={imageName} alt="" className=" w-full  max-h-96  " /> : null}
+          {imageName  && imageName.length>1?
+          <SimpleImageSlider
+          width={800}
+          height={400}
+          images={imageName}
+          showBullets={true}
+          showNavs={true}
+         /> :
+         <img src={imageName} alt="" className=" w-full  max-h-96  " />
+         }
+         
+          
         </div>
         <div className='mt-10'>
 
@@ -315,7 +337,12 @@ const saveChanges=async()=>{
           {open && displayComment.length > 0 && <div className=' h-4/5 ' >
             {open
               && displayComment.map((data) => (
-                <Comment key={data._id} value={data} displayComment={handledisplayComment} />
+              
+               
+                <Comment key={data._id} value={data} displayComment={handledisplayComment} editCommentHandle={editCommentHandle} />
+              
+               
+               
               ))}
           </div>
           }
@@ -326,7 +353,7 @@ const saveChanges=async()=>{
       </div>
       <div class="relative flex  ">
         <InputEmoji onChange={getComment} value={typeComment} type="Type comment" id="search" className=" focus:outline-none inline-block w-96 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-         placeholder="Search"
+         placeholder="Comment"
           required />
         <div className='flex justify-center items-center cursor-pointer'>
           {typeComment && <MdSend onClick={submitComment} className=' mr-10  text-green-700' size={25} />}

@@ -57,7 +57,11 @@ router.get('/friends/:userId',userController.getFriends)
 //...................................reportPost
  router.post('/report/:postId',userController.reportPost)
 
+ //...........................................getFriendDetails
+ router.get('/getFriendDetails/:userId',userController.getFriendDetails)
 
+//.................................................removeFollower
+router.put('/removeFollower/:userId',userController.removeFollower)
 
 
 

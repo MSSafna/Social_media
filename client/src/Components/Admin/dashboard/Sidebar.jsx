@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 function Sidebar(props) {
 
   const menus = [
+    { name: 'Dashboard', navigate: '/admin-view-dashboard', icon: AiOutlineUser },
     { name: 'User', navigate: '/admin-view-user', icon: AiOutlineUser },
     { name: 'Report', navigate: '/admin-view-reports', icon: MdOutlineDashboard },
     { name: 'Logout', navigate: '/admin-report', icon: MdOutlineDashboard },

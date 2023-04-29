@@ -22,7 +22,7 @@ function login() {
         { withCredentials: true },
       ).then((response) => {
         if (response.data == 'adminLogged') {
-          navigate('/admin-view-user');
+          navigate('/admin-view-dashboard');
         } 
          else {
           toast.error('Invalid login details');

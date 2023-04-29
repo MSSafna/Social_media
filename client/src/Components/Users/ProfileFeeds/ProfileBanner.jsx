@@ -64,6 +64,7 @@ function ProfileBanner() {
 
 
   useEffect(() => {
+    alert('called')
     const userDetails = (async () => {
       const result = await axios.get(`/api/user/getuserdetails/${userId}`)
       const updatedFollowings = [...result.data.followings, userId];
@@ -135,7 +136,7 @@ function ProfileBanner() {
     }
     fetchPost()
 
-  }, [displayPost, id, getPosts, profile])
+  }, [displayPost, id, getPosts, profile, ])
   //......................................postMessageHandle
   const message = (event) => {
     setMessage(event.target.value)
@@ -333,10 +334,10 @@ function ProfileBanner() {
             <div className='text-center flex '>
               <h1 className="font-bold text-2xl ml-6 mt-8">{details && details.username}</h1>
               <span className='text-2xl ml-12'>{details && details.followers.length}</span>
-              <p className=' ml-1 font-semibold'><FriendsModal name='Followers'/></p>
+              <p className=' ml-1 font-semibold'><FriendsModal name='Followers' userId={userId} setProfileHandle={setProfileHandle} profileHandle={profileHandle}/></p>
               <span className=' text-2xl ml-8'>{details && details.followings.length}</span>
               
-              <p className='ml-1 font-semibold'> <FriendsModal name='Followings'/></p>
+              <p className='ml-1 font-semibold'> <FriendsModal name='Followings' userId={userId}/></p>
               <p className=' text-2xl ml-8'>{userPosts.length}</p>
               <p className='ml-1 font-semibold'>Posts</p>
             </div>
