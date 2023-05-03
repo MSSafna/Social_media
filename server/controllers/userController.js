@@ -2,6 +2,7 @@ const User = require('../models/User')
 const Posts = require('../models/Posts')
 const Comment = require('../models/Comment')
 const Report = require('../models/Report')
+const Notification = require('../models/Notification')
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt')
 const ReplayComment = require('../models/ReplayComment');
@@ -41,7 +42,7 @@ module.exports = {
   //....................................................................postPost....................
   postPost: async (req, res) => {
     const { message, userId } = req.body;
-    console.log(req.files,'req.filrrrrrrrrrrrresss');
+    const user = await User.findById(userId)
     let imageUrl=[]
     try {
       if (req.files) {
@@ -73,7 +74,17 @@ module.exports = {
           caption: message
         }
       }
+       user.followers.map((userId) => {
+        const newNotification = new Notification({
+          receiverId:userId,
+          senderName:user.username,
+          message:'added a post'
+        })
+        newNotification.save()
+       })
+     
 
+      
       const newPost = new Posts(data);
       const savedPost = await newPost.save();
       const post = await Posts.findOne({ _id: savedPost._id }).populate('userId');
@@ -384,14 +395,16 @@ module.exports = {
       }
     ]
   }).sort('-createdAt').limit(5) 
+  console.log(otherUsers,'otherUSer');
    res.status(200).json(otherUsers)
   },
 
   //................................................................................editPost
   editPost:async(req,res)=>{
     try{
-      console.log(req.body);
+      console.log(req.body,'bodyyy');
       const{message,postId}=req.body
+      console.log(req.files);
       const data={}
      if(req.file){
       const file = req.file.path;
@@ -416,19 +429,24 @@ module.exports = {
   //...................................................follow User
   followUser:async(req,res)=>{
     try{
+      console.log(req.params.id);
       if (req.body.userId !== req.params.id) {
         try {
-          const user = await User.findById(req.params.id)
+          const user = await User.findOne({_id : req.params.id})
           const currentUser = await User.findById(req.body.userId)
-          if (!user.followers.includes(req.body.userId)) {
+          console.log(user,'user');
+          if (!user.followers.includes(req.body.userId) ) {
             await user.updateOne({ $push: { followers: req.body.userId } })
-            await currentUser.updateOne({ $push: { followings: req.params.id } })
+            await currentUser.updateOne({ $push: { followings: req.params.id } }) 
+            const newNotification =new Notification({
+              senderName:currentUser,
+              receiverId:user,
+              message:'started following you'
+            })
+            newNotification.save()
             return res.status(200).json(user)
-            
-          } else  if (!currentUser.followings.includes(req.params.id)){
-            await currentUser.updateOne({ $push: { followings: req.params.id } })
-            return res.status(200).json(user)
-          }else{
+          } 
+          else{
             res.status(403).json('you already follow this user')
           }
         } catch (err) {
@@ -449,13 +467,13 @@ module.exports = {
         try {
           const user = await User.findById(req.params.id)
           const currentUser = await User.findById(req.body.userId)
-          if (user.followers.includes(req.body.userId)) {
-            await User.updateOne({ $pull: { followers: req.body.userId } })
+            await user.updateOne({ $pull: { followers: req.body.userId } })
             await currentUser.updateOne({ $pull: { followings: req.params.id } })
+            const result = await Notification.updateOne({userId:req.params.id},{$pull:{followers:req.body.userId}})
+            console.log(result,'resultt');
+            
             return res.status(200).json('user has unfollow')
-          } else {
-            res.status(403).json('you dont follow this user')
-          }
+          
         } catch (err) {
           return res.status(403).json(err)
         }
@@ -472,12 +490,25 @@ module.exports = {
   likeAndUnlike:async (req,res) => {
       try {
         const post = await Posts.findById(req.params.id)
+       
+         const user = await User.findById(req.body.userId)
         if (!post.likes.includes(req.body.userId)) {
           await post.updateOne({ $push: { likes: req.body.userId } })
-          res.status(200).json('post liked')
+          if(req.body.userId != post.userId){
+           const newNotification = new Notification({
+            postId:post._id,
+            senderName:user,
+            receiverId:post.userId,
+            message:'liked your post'
+           })
+           const notification =  await newNotification.save()
+           console.log(notification,'notificationd');
+           
+          }
+          res.status(200).json()
         } else {
           await post.updateOne({ $pull: { likes: req.body.userId } })
-          res.status(200).json('post unliked')
+          res.status(200).json({UnlikedUser : user.username})
         }
       } catch (err) {
         res.status(500).json(err)
@@ -538,7 +569,19 @@ module.exports = {
     }catch(err){
       res.status(500).json(err)
     }
-  } 
+  } ,
+
+  //..................................................getNotifications
+  getNotifications: async (req, res) => {
+    try {
+     const userNotification = await Notification.find({receiverId:req.params.userId})
+     console.log(userNotification,'userNotification');
+     res.status(200).json(userNotification)
+    }catch(err){
+      res.status(500).json(err)
+    }
+  }
+  
 
 
 }

@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect } from 'react';
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import { useNavigate } from 'react-router-dom';
 import { Button, CloseButton } from '@chakra-ui/react';
 import jwtDecode from 'jwt-decode';
@@ -24,7 +24,7 @@ function Message(props) {
   const setFile = ((event) => {
 
     const files=event.target.files
-    if(files.type ==='images/jpeg'|| files.type==='images/png'){
+   
       console.log(files.type,'kfbfbsb');
       setimageFile(files)
       for (let i = 0; i < files.length; i++) {  
@@ -33,9 +33,7 @@ function Message(props) {
       }
       setImageUrls(urls);
       console.log(image,'umgesss');
-    }else{
-      alert("Invalid file format")
-    }
+    
     
 
   });

@@ -1,5 +1,5 @@
 
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';

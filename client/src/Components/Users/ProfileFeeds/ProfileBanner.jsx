@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Avatar from '../Avatar/Avatar';
 import { Button, CloseButton } from '@chakra-ui/react';
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import { UseruseContext } from '../../../Context/Context';
 import jwtDecode from 'jwt-decode';
 import Posts from '../Feeds/Posts';
@@ -37,7 +37,7 @@ function ProfileBanner() {
   const userId = user.userDetails._id;
   const jwtToken = localStorage.getItem('jwt')
   const jwt = JSON.parse(jwtToken);
-
+ 
   const fileInputRef = useRef(null);
   const profileInput = useRef(null)
   const bannerInput = useRef(null)
@@ -64,7 +64,6 @@ function ProfileBanner() {
 
 
   useEffect(() => {
-    alert('called')
     const userDetails = (async () => {
       const result = await axios.get(`/api/user/getuserdetails/${userId}`)
       const updatedFollowings = [...result.data.followings, userId];
@@ -219,11 +218,22 @@ function ProfileBanner() {
     await axios.put(`/api/user/${unfollowId}/unfollow`,{userId})
     setProfileHandle(!profileHandle)
   }
-
+ 
 
   const follow=async(followingId)=>{
-    await axios.put(`/api/user/${followingId}/follow`,{userId})
-    setProfileHandle(!profileHandle)
+    console.log(userId);
+    try{
+      await axios.put(`/api/user/${followingId}/follow`,{userId},
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      },
+      )
+      setProfileHandle(!profileHandle)
+    }catch(err){
+      console.log(err);
+    }
    
     
   }

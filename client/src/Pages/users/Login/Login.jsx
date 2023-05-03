@@ -1,5 +1,5 @@
 
-import axios from 'axios';
+import { axiosPrivate as axios} from '../../../API/axios';
 import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ function login() {
         { ...values },
         { withCredentials: true },
       ).then((response) => {
+        
         if (response.data.UsernotFound) {
           toast.error('User not Found');
     
@@ -33,6 +34,7 @@ function login() {
           toast.error("User is blocked")
         }
         else {
+          document.cookie=`jwt=${response.data.accessToken}`
           const jwtToken = cookies.get('jwt');
           setUserDetails({ jwt: jwtToken });
           localStorage.setItem('jwt', JSON.stringify(jwtToken));

@@ -12,6 +12,7 @@ import { BsFillChatSquareTextFill } from 'react-icons/bs'
 import { CgProfile } from 'react-icons/cg'
 import { BiLogOutCircle } from 'react-icons/bi'
 import ModalComponent from '../Modal/ModalComponent';
+import Notification from '../Notification/Notification';
 
 
 function Sidebar(props) {
@@ -53,12 +54,10 @@ function Sidebar(props) {
           </p>
           <p
             className={pathname == '/notification' ? activeElements : non_activeElements}
-            onClick={() => {
-              navigate('/notification')
-            }}
+            
           >
-            <MdNotificationsActive size={24} />
-            Notification
+            <MdNotificationsActive size={24} className='cursor-pointer' />
+            <Notification name='Notification'/>
           </p>
           <p
             className={pathname == '/chat' ? activeElements : non_activeElements}

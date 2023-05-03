@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 function UserChart() {
     const [state, setState] = useState('daily')
     const [handleState, setHandleState] = useState(false)

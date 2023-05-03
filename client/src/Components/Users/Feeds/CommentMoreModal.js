@@ -8,7 +8,7 @@ import {
     useDisclosure,
   } from '@chakra-ui/react'
   import {AiOutlineMore} from 'react-icons/ai'
-  import axios from 'axios'
+  import { axiosPrivate as axios } from '../../../API/axios'
   import EditCommentModal from './EditCommentModal'
 
 function CommentMoreModal({commentId, postId ,displayComment,comment , editCommentHandle}) {

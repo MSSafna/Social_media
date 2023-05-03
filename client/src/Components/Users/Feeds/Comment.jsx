@@ -4,7 +4,7 @@ import moment from 'moment';
 import Avatar from '../Avatar/Avatar';
 import InputEmoji from 'react-input-emoji';
 import { MdSend } from 'react-icons/md';
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import jwtDecode from 'jwt-decode';
 import { AiFillDelete } from 'react-icons/ai'
 import login from '../../../Pages/Admin/login/Adminlogin';

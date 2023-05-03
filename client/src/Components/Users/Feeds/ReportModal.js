@@ -12,7 +12,7 @@ import {
     Checkbox,
     Textarea
   } from '@chakra-ui/react'
-import axios from 'axios'
+import { axiosPrivate as axios } from '../../../API/axios'
  
 
   function ReportModal({postId}) {
@@ -22,7 +22,6 @@ import axios from 'axios'
     const submitHandle=(async(e)=>{
      e.preventDefault()
     const res =  await axios.post(`/api/user/report/${postId}`,values)
-    console.log('reachedddddddddddddddddddddddddd');
     onClose()
 
   })

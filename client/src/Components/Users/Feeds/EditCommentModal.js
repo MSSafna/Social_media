@@ -11,7 +11,7 @@ import {
     Button
 } from '@chakra-ui/react'
 import InputEmoji from 'react-input-emoji';
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import MyContext from './Posts'
 
 

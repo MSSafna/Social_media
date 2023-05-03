@@ -8,7 +8,7 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react'
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import { UseruseContext } from '../../../Context/Context';
 import jwtDecode from 'jwt-decode';
 import Avatar from '../Avatar/Avatar';

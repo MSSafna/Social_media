@@ -5,7 +5,7 @@ import Header from './Header';
 import Testing from './Table';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import UserChart from './UserChart';
 
 function Dashboard() {

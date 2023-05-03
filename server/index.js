@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 dotenv.config();
-mongoose.connect(process.env.MONGO_URL,{useNewUrlParser:true,useUnifiedTopology:true}, () => {
+mongoose.connect(process.env.MONGO_URL,{useNewUrlParser:true,useUnifiedTopology:true}).then(() => {
   console.log('connected to mongo')
 })
 
@@ -30,9 +30,16 @@ app.use(express.json())
 app.use(helmet())
 
 app.use(morgan('common'))
+
+//  app.use(cors({
+//   origin:["http://localhost:3000"],
+//   method:["GET","POST"],
+//   credentials:true
+// }))
+
 app.use(cors({
-  origin:["http://localhost:3000"],
-  method:["GET","POST"],
+  origin:["https://tourmaline-malasada-d41c28.netlify.app"],
+  method:["GET","POST","PUT","PATCH","DELETE"],
   credentials:true
 }))
 
@@ -42,6 +49,6 @@ app.use('/api/conversation', userConveration)
 app.use('/api/message',userMessage)
 app.use('/api/admin',adminRoute)
 
-app.listen(4000, () => {
+app.listen(5000, () => {
   console.log('connected to server')
 })

@@ -9,13 +9,12 @@ import {
   useDisclosure,
   Button
 } from '@chakra-ui/react'
-import axios from 'axios'
+import { axiosPrivate as axios } from '../../../API/axios';
 import { useEffect, useState } from 'react'
 import Avatar from '../Avatar/Avatar'
 import { useNavigate } from 'react-router';
 
 function FriendsModal({ name, userId ,setProfileHandle, profileHandle}) {
-  console.log(profileHandle);
   const navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [stateName, setSateName] = useState('')
@@ -25,6 +24,7 @@ function FriendsModal({ name, userId ,setProfileHandle, profileHandle}) {
   const handleOpen = (async (name) => {
     setSateName(name)
     const res = await axios.get(`/api/user/getFriendDetails/${userId}`)
+    console.log(res,'ressss');
     setFriendDetails(res.data)
   })
 

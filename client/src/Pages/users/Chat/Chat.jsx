@@ -5,7 +5,7 @@ import InputEmoji from 'react-input-emoji';
 import Online from '../../../Components/Users/Online/Online';
 import { UseruseContext } from '../../../Context/Context'
 import jwtDecode from 'jwt-decode';
-import axios from 'axios'
+import {axiosPrivate as axios} from '../../../API/axios';
 import { MdSend } from 'react-icons/md';
 import {io} from 'socket.io-client'
 

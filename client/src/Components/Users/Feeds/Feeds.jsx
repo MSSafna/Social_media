@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { axiosPrivate as axios } from '../../../API/axios';
 import jwtDecode from 'jwt-decode';
 import Message from './Message';
 import Posts from './Posts';
@@ -24,6 +24,7 @@ function Feeds() {
 
   useEffect(()=>{
     const userDetails=(async()=>{
+      console.log(axios,'axiosss');
       const result= await axios.get(`/api/user/getuserdetails/${userId}`)
       setCurrentUser(result.data)
     })
@@ -36,12 +37,12 @@ function Feeds() {
       const jwtToken = localStorage.getItem('jwt');
       const jwt = JSON.parse(jwtToken);
       const res = await axios.get(
-        ` /api/posts/timeLine/${userId}`,
+        `/api/posts/timeline/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
-        },
+        }
       );
         setPosts(res.data.result);
         setGetPosts(false)
